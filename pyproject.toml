@@ -6,9 +6,17 @@ authors = ["James Thorniley <james.thorniley@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+numpy = "^1.17.3"
+scipy = "^1.3.2"
+matplotlib = "^3.1.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+jupyter = "^1.0.0"
+matplotlib = "^3.1.1"
+
+[tool.poetry.scripts]
+plot_pendulum="clock:solve_and_plot_pendulum"
 
 [build-system]
 requires = ["poetry>=0.12"]
