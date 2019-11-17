@@ -3,5 +3,6 @@ build
 dist
 *.egg-info
 *.png
+*.gif
 .ipynb_checkpoints
 .vscode
