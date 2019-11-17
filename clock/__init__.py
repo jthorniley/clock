@@ -54,7 +54,7 @@ class PendulumAnimation:
 
 def pendulum():
     """Draw an illustration of the dynamics of a draggy pendulum."""
-    bgcolor = "#e9f2cb"
+    bgcolor = "white"
     fig, (state, illustration) = plt.subplots(ncols=2)
     fig.tight_layout(pad=0)
     fig.set_size_inches(6, 3)
@@ -62,7 +62,7 @@ def pendulum():
 
     animations = []
 
-    configs = ((0.1, 12*np.pi, '#f086dc'), (0.0, 2*np.pi, 'black'))
+    configs = ((0.1, 12*np.pi, '#f086dc'), (0.0, 2*np.pi, '#5cad69'))
     for i, (drag, t, color) in enumerate(configs):
         p = PendulumAnimation(drag, t, color, state, illustration, i)
         animations.append(p)
