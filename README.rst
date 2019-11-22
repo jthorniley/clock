@@ -18,5 +18,5 @@ Video gifs
 
     poetry run pendulum -o pendulum@2x.avi
     ffmpeg  -i pendulum@2x.avi -filter_complex \
-        "[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse" \
+        "[0:v] split [a][b];[a] palettegen=max_colors=16 [p];[b][p] paletteuse" \
         pendulum@2x.gif
