@@ -3,7 +3,7 @@ __author__ = 'James Thorniley <james.thorniley@gmail.com'
 __license__ = 'GPL 3'
 
 import argparse
-from typing import Sequence, Optional, Callable
+from typing import Optional
 
 from matplotlib.axes import Axes
 from matplotlib import animation
@@ -80,7 +80,7 @@ def pendulum():
     if save_file:
         ani.save_count = (animations[0].sol.t.shape[0])
         ani.save(save_file,
-                 writer='imagemagick',
+                 codec='rawvideo',
                  fps=50,
                  dpi=150,
                  savefig_kwargs=dict(facecolor=bgcolor))
@@ -115,7 +115,7 @@ def escapement():
     if save_file:
         ani.save_count = (animations[0].sol.t.shape[0])
         ani.save(save_file,
-                 writer='imagemagick',
+                 codec='rawvideo',
                  fps=50,
                  dpi=150,
                  savefig_kwargs=dict(facecolor=bgcolor))

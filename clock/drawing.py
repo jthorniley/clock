@@ -15,7 +15,6 @@ class EqualAspectAxis:
     ratio (so things don't look stretched) and to remove
     the axis labels / lines.
     """
-
     def __init__(self, ax: matplotlib.axes.Axes):
         ax.axis((-1.5, 1.5, -1.5, 1.5))
         ax.set_aspect('equal')
@@ -41,10 +40,10 @@ class Pendulum(EqualAspectAxis):
             accepted by matplotlib) for the pendulum.
 
     """
-
     def __init__(self,
                  ax: matplotlib.axes.Axes,
-                 color: Union[Text, Iterable] = '#f086dc', zorder=1):
+                 color: Union[Text, Iterable] = '#f086dc',
+                 zorder=1):
         super().__init__(ax)
         self.ax = ax
         self.color = color
@@ -111,7 +110,6 @@ class Trajectory(EqualAspectAxis):
             (default -1 means plot all points)
 
     """
-
     def __init__(self,
                  ax: matplotlib.axes.Axes,
                  solution: Any,
@@ -156,7 +154,8 @@ class Trajectory(EqualAspectAxis):
         # Add the marker to the axis
         self._marker = Circle(xy=self.solution.y[:, 0],
                               radius=radius,
-                              facecolor=color, zorder=zorder)
+                              facecolor=color,
+                              zorder=zorder)
         ax.add_patch(self._marker)
 
         y = self.solution.y
