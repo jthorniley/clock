@@ -2,7 +2,7 @@ Oscillator simulations
 **********************
 
 .. image:: output/pendulum@2x.gif
-    :width: 450px
+    :width: 225px
 
 Tests
 =====
