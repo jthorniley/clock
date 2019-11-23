@@ -117,7 +117,7 @@ def escapement():
                               state,
                               illustration,
                               i,
-                              model=models.PendulumWithEscapement(0.1, 0.3),
+                              model=models.PendulumWithEscapement(0.1, 0.2),
                               init=[init, 0.])
         animations.append(p)
 
@@ -143,7 +143,7 @@ def escapement():
 
 
 def escapement_surface():
-    model = models.PendulumWithEscapement(0.1, 0.3)
+    model = models.PendulumWithEscapement(0.1, 1)
     bgcolor = "white"
     fig = plt.figure()
     fig.set_size_inches(6, 4)
@@ -189,7 +189,7 @@ def escapement_surface():
         ax=(surface, contour),
         anchor=(0.5, -0.5),
         aspect=40,
-        ticks=np.linspace(R.min(), R.max(), 7),
+        ticks=np.linspace(R.min(), R.max(), 5),
         orientation='horizontal',
     )
 

@@ -110,10 +110,10 @@ class PendulumWithEscapement(Pendulum):
 
         # This calculates the additional acceleration provided
         # by the escapement
-        𝜎̈_escapement = self.escapement(*y)
+        𝜎̈_escapement = self.𝑞 * self.escapement(*y)
 
         𝜎̈ = 𝜎̈_pendulum + 𝜎̈_escapement
         return [y[1], 𝜎̈]
 
     def escapement(self, 𝜎, 𝜎̇):
-        return self.𝑞 * np.tanh(5*𝜎)*np.exp(-(5*𝜎*𝜎̇ - 1)**2)
+        return np.tanh(5*𝜎)*np.exp(-(10*(𝜎*𝜎̇ - 0.2))**2)
