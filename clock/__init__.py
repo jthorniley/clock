@@ -5,9 +5,10 @@ __license__ = 'GPL 3'
 import argparse
 from typing import Optional
 
+from matplotlib import animation, cm, pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib import animation
-from matplotlib import pyplot as plt
+# This import registers the 3D projection, but is otherwise unused.
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import numpy as np
 
 from . import drawing, models
@@ -28,9 +29,14 @@ def save_to_file() -> Optional[str]:
 
 
 class PendulumAnimation:
-    def __init__(self, t: float, color: str,
-                 state: Axes, illustration: Axes, zorder: int,
-                 model: models.Pendulum, init=[1., 0.]):
+    def __init__(self,
+                 t: float,
+                 color: str,
+                 state: Axes,
+                 illustration: Axes,
+                 zorder: int,
+                 model: models.Pendulum,
+                 init=[1., 0.]):
         self.model = model
         self.sol = self.model.solve(init, t, 20)
         self.trajectory = drawing.Trajectory(state,
@@ -63,9 +69,13 @@ def pendulum():
 
     animations = []
 
-    configs = ((0.1, 12*np.pi, '#f086dc'), (0.0, 2*np.pi, '#5cad69'))
+    configs = ((0.1, 12 * np.pi, '#f086dc'), (0.0, 2 * np.pi, '#5cad69'))
     for i, (drag, t, color) in enumerate(configs):
-        p = PendulumAnimation(t, color, state, illustration, i,
+        p = PendulumAnimation(t,
+                              color,
+                              state,
+                              illustration,
+                              i,
                               model=models.Pendulum(drag))
         animations.append(p)
 
@@ -73,8 +83,11 @@ def pendulum():
         for a in animations:
             a.update()
 
-    ani = animation.FuncAnimation(
-        fig, update, animations[0].sol.t, interval=20, blit=False)
+    ani = animation.FuncAnimation(fig,
+                                  update,
+                                  animations[0].sol.t,
+                                  interval=20,
+                                  blit=False)
 
     save_file = save_to_file()
     if save_file:
@@ -99,7 +112,11 @@ def escapement():
 
     configs = ((.6, '#f086dc'), (1.2, '#5cad69'))
     for i, (init, color) in enumerate(configs):
-        p = PendulumAnimation(24*np.pi, color, state, illustration, i,
+        p = PendulumAnimation(24 * np.pi,
+                              color,
+                              state,
+                              illustration,
+                              i,
                               model=models.PendulumWithEscapement(0.1, 0.3),
                               init=[init, 0.])
         animations.append(p)
@@ -108,8 +125,11 @@ def escapement():
         for a in animations:
             a.update()
 
-    ani = animation.FuncAnimation(
-        fig, update, animations[0].sol.t, interval=20, blit=False)
+    ani = animation.FuncAnimation(fig,
+                                  update,
+                                  animations[0].sol.t,
+                                  interval=20,
+                                  blit=False)
 
     save_file = save_to_file()
     if save_file:
@@ -123,34 +143,57 @@ def escapement():
 
 
 def escapement_surface():
-    # This import registers the 3D projection, but is otherwise unused.
-    from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
-
-    import matplotlib.pyplot as plt
-    from matplotlib import cm
-    from matplotlib.ticker import LinearLocator, FormatStrFormatter
-    import numpy as np
-
+    model = models.PendulumWithEscapement(0.1, 0.3)
+    bgcolor = "white"
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    fig.set_size_inches(6, 4)
+    fig.set_facecolor(bgcolor)
+    fig.subplots_adjust(bottom=0.2)
+    contour = fig.add_subplot(1, 2, 1)
+    surface = fig.add_subplot(1, 2, 2, projection='3d')
 
     # Make data.
     Q = 1.0
     sigma = np.linspace(-Q, Q, 500)
     dsigma = np.linspace(-Q, Q, 500)
     sigma, dsigma = np.meshgrid(sigma, dsigma)
-    R = np.tanh(5*sigma)*np.exp(-(5*sigma*dsigma - 1)**2)
+    R = model.escapement(sigma, dsigma)
 
     # Plot the surface.
-    surf = ax.plot_surface(sigma, dsigma, R, cmap=cm.viridis,
-                           linewidth=0, antialiased=False)
+    s = surface.plot_surface(sigma,
+                             dsigma,
+                             R,
+                             linewidth=0,
+                             cmap=cm.viridis,
+                             antialiased=False)
+    surface.grid(False)
+    for axis in (surface.xaxis, surface.yaxis, surface.zaxis):
+        axis.set_pane_color((1, 1, 1))
+    contour.contourf(sigma,
+                     dsigma,
+                     R,
+                     levels=np.linspace(R.min(), R.max(), 200))
 
-    # Customize the z axis.
-    ax.set_zlim(-1.01, 1.01)
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    surface.set_xlabel(r'$\sigma$')
+    surface.set_ylabel(r'$\dot{\sigma}$')
+    surface.set_zlabel(r'$e$')
+    contour.set_xlabel(r'$\sigma$')
+    contour.set_ylabel(r'$\dot{\sigma}$')
 
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
+    surface.set_xticks(np.linspace(-Q, Q, 3))
+    surface.set_yticks(np.linspace(-Q, Q, 3))
 
+    fig.colorbar(
+        s,
+        label=r'$e$',
+        ax=(surface, contour),
+        anchor=(0.5, -0.5),
+        aspect=40,
+        ticks=np.linspace(R.min(), R.max(), 7),
+        orientation='horizontal',
+    )
+
+    save_file = save_to_file()
+    if save_file:
+        plt.savefig(save_file, dpi=150)
     plt.show()

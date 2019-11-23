@@ -104,10 +104,16 @@ class PendulumWithEscapement(Pendulum):
         We add an acceleration introduced by the escapement.
         """
 
+        # This calls the base class to get the acceleration
+        # due to the pendulum
         𝜎̈_pendulum = super().__call__(t, y)[1]
 
-        𝜎, 𝜎̇ = y
-        𝜎̈_escapement = self.𝑞 * np.tanh(5*𝜎)*np.exp(-(5*𝜎*𝜎̇ - 1)**2)
+        # This calculates the additional acceleration provided
+        # by the escapement
+        𝜎̈_escapement = self.escapement(*y)
 
         𝜎̈ = 𝜎̈_pendulum + 𝜎̈_escapement
-        return [𝜎̇, 𝜎̈]
+        return [y[1], 𝜎̈]
+
+    def escapement(self, 𝜎, 𝜎̇):
+        return self.𝑞 * np.tanh(5*𝜎)*np.exp(-(5*𝜎*𝜎̇ - 1)**2)
