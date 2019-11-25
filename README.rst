@@ -14,9 +14,14 @@ Run tests with::
 Video gifs
 ==========
 
+The ``pendulum`` and ``escapement`` scripts can both produce animation
+files with the ``-o`` switch. Convert to a relatively efficient animated
+gif with ffmpeg like so:
+
 .. code-block::
 
-    poetry run pendulum -o pendulum@2x.avi
-    ffmpeg  -i pendulum@2x.avi -filter_complex \
+    filename="pendulum"
+    poetry run pendulum -o $filename.avi
+    ffmpeg  -i $filename.avi -filter_complex \
         "[0:v] split [a][b];[a] palettegen=max_colors=16 [p];[b][p] paletteuse" \
-        pendulum@2x.gif
+        $filename.gif

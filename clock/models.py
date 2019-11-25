@@ -28,33 +28,35 @@ class Pendulum:
                 0.98508718, 0.98093764, 0.97640454, 0.9714905 , 0.9661983 ]])
     """
 
-    def __init__(self, 𝑘: float):
-        self.𝑘 = 𝑘
+    def __init__(self, k: float):
+        self.k = k
 
     def __call__(self, t: float, y: Sequence[float]):
         """Derivative of system state.
 
-        The equation is::
+        The equation is:
 
-            𝜎̈ = -𝜎 - 𝑘𝜎̇
+        .. math::
 
-        Where 𝜎 is the angle of the pendulum and 𝜎̇, 𝜎̈ are the
-        derivatives.
+            \\ddot{p} = -p - k\\dot{p}
+
+        Where $p$ is the angle of the pendulum and $\\dot{p}, \\ddot{p}$
+        are the derivatives.
 
         Arguments:
 
             t: The time being solved for (this is not used here)
-            y: The input state (an array of 𝜎, 𝜎̇)
+            y: The input state (an array of $p, \\dot{p}$)
 
         Returns:
 
-            Array giving the derivative (𝜎̇, 𝜎̈)
+            Array giving the derivative ($\\dot{p}, \\ddot{p}$)
         """
 
-        𝜎, 𝜎̇ = y
-        𝜎̈ = -𝜎 - self.𝑘 * 𝜎̇
+        p, dotp = y
+        ddotp = -p - self.k * dotp
 
-        return [𝜎̇, 𝜎̈]
+        return [dotp, ddotp]
 
     def solve(self,
               init: Sequence[float],
@@ -93,9 +95,9 @@ class PendulumWithEscapement(Pendulum):
     indefinitely (like a clock) even when there is drag.
     """
 
-    def __init__(self, 𝑘: float, 𝑞: float):
-        super().__init__(𝑘)
-        self.𝑞 = 𝑞
+    def __init__(self, k: float, q: float):
+        super().__init__(k)
+        self.q = q
 
     def __call__(self, t: float, y: Sequence[float]):
         """Calculate derivative.
@@ -106,14 +108,17 @@ class PendulumWithEscapement(Pendulum):
 
         # This calls the base class to get the acceleration
         # due to the pendulum
-        𝜎̈_pendulum = super().__call__(t, y)[1]
+        ddotp_pendulum = super().__call__(t, y)[1]
 
         # This calculates the additional acceleration provided
         # by the escapement
-        𝜎̈_escapement = self.𝑞 * self.escapement(*y)
+        ddotp_escapement = self.q * self.escapement(*y)
 
-        𝜎̈ = 𝜎̈_pendulum + 𝜎̈_escapement
-        return [y[1], 𝜎̈]
+        ddotp = ddotp_pendulum + ddotp_escapement
+        return [y[1], ddotp]
 
-    def escapement(self, 𝜎, 𝜎̇):
-        return np.tanh(5*𝜎)*np.exp(-(10*(𝜎*𝜎̇ - 0.2))**2)
+    def escapement(self, p, dotp):
+        def peak(offset):
+            d = (-p-offset)**2+(dotp-offset)**2
+            return np.exp(-20*d)
+        return peak(0.4) - peak(-0.4)
