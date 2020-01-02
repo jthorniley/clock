@@ -4,6 +4,11 @@ Oscillator simulations
 .. image:: output/pendulum@2x.gif
     :width: 450px
 
+Blog post explanation
+=====================
+
+https://medium.com/swlh/clocks-and-oscillators-a401dabb08c2?source=friends_link&sk=b1777334c6e1aeb9303fb9ce3a6c7442
+
 Running the code
 ================
 
