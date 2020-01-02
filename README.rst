@@ -7,7 +7,7 @@ Oscillator simulations
 Blog post explanation
 =====================
 
-https://medium.com/swlh/clocks-and-oscillators-a401dabb08c2?source=friends_link&sk=b1777334c6e1aeb9303fb9ce3a6c7442
+`Here <https://medium.com/swlh/clocks-and-oscillators-a401dabb08c2?source=friends_link&sk=b1777334c6e1aeb9303fb9ce3a6c7442>`_
 
 Running the code
 ================
